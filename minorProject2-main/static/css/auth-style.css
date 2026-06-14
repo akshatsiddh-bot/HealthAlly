@@ -1,0 +1,563 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Theme Palette */
+    --bg-body: #ffffff;
+    --hero-bg: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-on-blue: #ffffff;
+    --accent-primary: #2563eb;
+    --accent-glow: rgba(59, 130, 246, 0.5);
+    --card-bg: #ffffff;
+    --border-color: #e2e8f0;
+    --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.12);
+
+    /* Helpers */
+    --danger: #ef4444;
+    --input-bg: #f8fafc;
+}
+
+[data-theme="dark"] {
+    --bg-body: #0f172a;
+    --hero-bg: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-on-blue: #e2e8f0;
+    --accent-primary: #3b82f6;
+    --card-bg: #1e293b;
+    --border-color: #334155;
+    --shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    --shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.7);
+    --input-bg: #0f172a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 45% 55%;
+    /* Split Screen Layout */
+    overflow-x: hidden;
+}
+
+/* --- GLOBAL CONTROLS (Back & Theme) --- */
+.global-back-btn {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    /* Always white because it's usually over the blue hero on desktop */
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.global-back-btn:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.theme-toggle {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 50;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    border-color: var(--accent-primary);
+}
+
+/* --- LEFT SIDE: HERO --- */
+.hero-section {
+    background: var(--hero-bg);
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    color: var(--text-on-blue);
+}
+
+/* Background Circles */
+.hero-bg-circle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    z-index: 0;
+}
+
+.circle-1 {
+    width: 400px;
+    height: 400px;
+    top: -100px;
+    right: -100px;
+}
+
+.circle-2 {
+    width: 200px;
+    height: 200px;
+    bottom: 50px;
+    left: -50px;
+}
+
+.brand-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-content {
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    z-index: 2;
+    max-width: 450px;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.hero-text {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.hero-footer {
+    position: relative;
+    z-index: 2;
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+/* --- RIGHT SIDE: FORM --- */
+.form-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+    background-color: var(--bg-body);
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 10px;
+
+}
+
+/* Headers */
+.auth-header {
+    margin-bottom: 2rem;
+}
+
+.auth-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* Links */
+.link-text {
+    color: var(--accent-primary);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.link-text:hover {
+    text-decoration: underline;
+}
+
+/* Update the global font to the sharper 'Plus Jakarta Sans' */
+body,
+button,
+input {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Make the inputs look "Pro" (Boxier, more whitespace) */
+.input-group {
+    margin-bottom: 1.5rem;
+    /* More breathing room */
+    position: relative;
+    /* Needed for the eye icon position */
+}
+
+.auth-input {
+    width: 100%;
+    padding: 16px 45px 16px 16px;
+    /* Extra padding on right for the eye icon */
+    background: transparent;
+    /* distinct white background */
+    border: 1px solid #cbd5e1;
+    /* Subtle slate border */
+    border-radius: 8px;
+    /* The "Pro" standard radius (not 16px) */
+    font-size: 0.95rem;
+    /* 16px font size is standard for legibility */
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.2s ease-in-out;
+}
+
+/* The Google-style Focus State */
+.auth-input:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 4px var(--accent-glow);
+    /* The blue halo */
+}
+
+/* Input Labels (Optional but professional) */
+.input-label {
+    display: block;
+    margin-bottom: 4px;
+    margin-left: 4px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+/* The Helper Text (The text from your image) */
+.helper-text {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.helper-text i {
+    color: var(--accent-primary);
+    margin-right: 4px;
+}
+
+/* The "Eye" Icon for passwords */
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 18px;
+    /* Vertically center based on input height */
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.1rem;
+    z-index: 10;
+}
+
+.password-toggle:hover {
+    color: var(--accent-primary);
+}
+
+
+.auth-input.error {
+    border-color: var(--danger);
+    background: rgba(244, 33, 46, 0.03);
+}
+
+.error-msg {
+    color: var(--danger);
+    font-size: 0.85rem;
+    margin-top: 6px;
+    display: none;
+    padding-left: 4px;
+    font-weight: 500;
+}
+
+.error-msg.show {
+    display: block;
+}
+
+/* Success State for Inputs */
+.auth-input.success {
+    border-color: #10b981;
+    /* Green color */
+    background: rgba(16, 185, 129, 0.03);
+}
+
+.success-msg {
+    color: #10b981;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    display: none;
+    padding-left: 4px;
+    font-weight: 500;
+}
+
+.success-msg.show {
+    display: block;
+}
+
+/* Buttons */
+.auth-btn-primary {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 10px;
+}
+
+.auth-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px var(--accent-glow);
+}
+
+.social-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+}
+
+.social-btn:hover {
+    background: var(--input-bg);
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 2rem 0;
+    gap: 1rem;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+}
+
+/* Internal Back Button (for steps) */
+.step-back-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+}
+
+.step-back-btn:hover {
+    color: var(--accent-primary);
+}
+
+/* View Animations */
+.view-section {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.view-section.active {
+    display: block;
+}
+
+/* The Popup Container */
+.popup-window {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+
+    /* Modern Green Gradient */
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: #ffffff;
+
+    padding: 0;
+    /* Padding handled by inner content to allow progress bar flush at bottom */
+    border-radius: 8px;
+    /* Greenish glow shadow */
+    font-family: 'Plus Jakarta Sans', sans-serif;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Keeps the progress bar inside the rounded corners */
+    z-index: 1000;
+
+    /* Hidden State */
+    opacity: 0;
+    transform: translateX(50px);
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    /* Bouncy slide in */
+}
+
+/* Active State */
+.popup-window.show {
+    opacity: 1;
+    transform: translateX(0);
+    visibility: visible;
+}
+
+/* Content Layout */
+.popup-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+}
+
+#popup-window-icon {
+    font-size: 20px;
+    color: #fff;
+    /* White icon */
+}
+
+#popup-window-text {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* The Progress Bar Line */
+.popup-progress-bar {
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.6);
+    /* Semi-transparent white */
+    width: 0%;
+    /* Start at 0 */
+}
+
+/* Animation Class */
+.popup-window.show .popup-progress-bar {
+    animation: progressLine 2s linear forwards;
+}
+
+@keyframes progressLine {
+    0% {
+        width: 0%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    body {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-section {
+        padding: 2rem;
+        min-height: 250px;
+        text-align: center;
+        align-items: center;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-text,
+    .hero-footer,
+    .hero-bg-circle {
+        display: none;
+    }
+
+    .brand-logo {
+        margin-bottom: 0;
+    }
+
+    /* On mobile, global back btn needs to be visible against blue or white */
+    .global-back-btn {
+        top: 20px;
+        left: 20px;
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .form-section {
+        border-radius: 24px 24px 0 0;
+        margin-top: -24px;
+        /* Overlap hero */
+        min-height: calc(100vh - 226px);
+        padding-top: 3rem;
+    }
+}

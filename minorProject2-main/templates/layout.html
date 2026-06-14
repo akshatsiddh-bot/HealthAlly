@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MedAI Assist{% endblock %}</title>
+
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <nav>
+                <div class="logo">
+                    <span id="logoText">HealthAlly</span>
+                </div>
+
+                <ul class="nav-links">
+                    <li><a href="/" id="navHome">Home</a></li>
+                    <li><a href="/services" id="navServices">Services</a></li>
+                    <li><a href="/pricing" id="navPricing">Pricing</a></li>
+                    <li><a href="#docs" id="navDocs">Documentation</a></li>
+                </ul>
+
+                <div class="nav-actions">
+                    <div class="lang-selector">
+                        <button class="lang-btn" onclick="toggleLangDropdown()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="2" y1="12" x2="22" y2="12" />
+                                <path
+                                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                            </svg>
+                            <span id="currentLang">EN</span>
+                        </button>
+                        <div class="lang-dropdown" id="langDropdown">
+                            <div class="lang-option" onclick="changeLang('en')">English</div>
+                            <div class="lang-option" onclick="changeLang('hi')">हिंदी</div>
+                        </div>
+                    </div>
+
+                    <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">
+                        <i id="themeIcon" class="fas fa-sun"></i>
+                    </button>
+
+                    <button class="btn btn-primary" id="loginBtn" onclick="window.location.href='/login'">Login</button>
+                </div>
+
+                <button class="mobile-menu-btn">☰</button>
+                <div class="mobile-menu" id="mobileMenu">
+                    <a href="/" class="mobile-link">Home</a>
+                    <a href="/services" class="mobile-link">Services</a>
+                    <a href="/pricing" class="mobile-link">Pricing</a>
+                    <a href="#docs" class="mobile-link">Documentation</a>
+
+                    <div class="mobile-lang-separator"></div>
+                    <div class="mobile-lang-container">
+                        <span class="mobile-lang-label">Language / भाषा</span>
+                        <div class="mobile-lang-options">
+                            <button onclick="changeLang('en')" class="mobile-lang-btn">English</button>
+                            <button onclick="changeLang('hi')" class="mobile-lang-btn">हिंदी</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+
+        {% block content %}{% endblock %}
+
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4 id="footerBrand">HealthAlly</h4>
+                    <p id="footerDescription">Revolutionizing healthcare with artificial intelligence. Your trusted
+                        partner
+                        for medical guidance, diagnosis, and wellness management.</p>
+                </div>
+                <div class="footer-section">
+                    <h4 id="footerProductHeading">Product</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#features" id="footerLinkFeatures">Features</a></li>
+                        <li><a href="#" id="footerLinkPricing">Pricing</a></li>
+                        <li><a href="#" id="footerLinkAPI">API</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 id="footerCompanyHeading">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" id="footerLinkAbout">About Us</a></li>
+                        <li><a href="#" id="footerLinkCareers">Careers</a></li>
+                        <li><a href="#" id="footerLinkBlog">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 id="footerLegalHeading">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" id="footerLinkPrivacy">Privacy</a></li>
+                        <li><a href="#" id="footerLinkTerms">Terms</a></li>
+                        <li><a href="#" id="footerLinkSecurity">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p id="footerCopyright">© 2024 HealthAlly. All rights reserved.</p>
+            </div>
+        </footer>
+
+    </div>
+
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/translate.js') }}"></script>
+</body>
+
+</html>

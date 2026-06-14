@@ -1,0 +1,1437 @@
+.google-sans-flex-chat {
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings:
+        "slnt" 0,
+        "wdth" 100,
+        "GRAD" 0,
+        "ROND" 0;
+}
+
+@font-face {
+    font-family: 'fkGroteskNeue';
+    src: url('https://assets.perplexity.ai/fonts/FKGroteskNeue-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+:root {
+    --bg-body: #ffffff;
+    --bg-sidebar: #f0f4f9;
+    --bg-hover: #e3e3e362;
+    --bg-active: #d3e3fd;
+    --text-main: #1e1f20;
+    --text-sub: #444746;
+    --border: #e2e8f0;
+    --primary: #0b57d0;
+    --chat-max-width: 800px;
+    --sidebar-active: #d3e3fd;
+    --sidebar-active-text: #0842A0;
+    --laoding-spinner: #add8e6;
+}
+
+[data-theme="dark"] {
+    --bg-body: #131314;
+    --bg-sidebar: #1e1f20;
+    --bg-hover: #2d2e30;
+    --bg-active: #004a77;
+    --text-main: #e3e3e3;
+    --text-sub: #c4c7c5;
+    --border: #444746;
+    --primary: #a8c7fa;
+    --sidebar-active: #1f3760;
+    --sidebar-active-text: #d3e3fd;
+    --laoding-spinner: #376E87;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Google Sans Flex";
+    background-color: var(--bg-body);
+    color: var(--text-main);
+
+    /* CHANGED: Use dvh for mobile browsers, fallback to vh */
+    height: 100vh;
+    height: 100dvh;
+
+    display: flex;
+    overflow: hidden;
+}
+
+/* --- SIDEBAR --- */
+#sidebar {
+    width: 300px;
+    background-color: var(--bg-sidebar);
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;
+    position: relative;
+    flex-shrink: 0;
+    z-index: 100;
+}
+
+/* WRAP THIS ENTIRE BLOCK IN A MEDIA QUERY FOR DESKTOP ONLY */
+@media (min-width: 769px) {
+    #sidebar.collapsed {
+        width: 72px;
+    }
+
+    #sidebar.collapsed .text-label,
+    #sidebar.collapsed .sidebar-footer-text,
+    #sidebar.collapsed .section-label,
+    #sidebar.collapsed .chat-options-btn {
+        display: none !important;
+    }
+
+    #sidebar.collapsed .footer-item,
+    #sidebar.collapsed .new-chat-btn,
+    #sidebar.collapsed .menu-btn {
+        justify-content: center;
+    }
+
+    #sidebar.collapsed .history-item {
+        display: none !important;
+    }
+}
+
+.sidebar-header {
+    padding: 20px 16px;
+    padding-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.top-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    color: var(--text-main);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 12px 14px;
+    border-radius: 50%;
+}
+
+.menu-btn:hover {
+    background-color: var(--bg-hover);
+}
+
+.new-chat-btn {
+    color: var(--text-main);
+    border: none;
+    padding: 12px 14px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.new-chat-btn i {
+    font-size: 16px;
+}
+
+.new-chat-btn:hover {
+    background-color: var(--bg-hover);
+}
+
+.history-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.section-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-main);
+    padding: 8px 16px;
+}
+
+.history-item {
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    color: var(--text-main);
+    text-decoration: none;
+    position: relative;
+    margin-bottom: 2px;
+}
+
+.history-item:hover {
+    background-color: var(--bg-hover);
+}
+
+.history-item.active {
+    background-color: var(--sidebar-active);
+    color: var(--sidebar-active-text);
+}
+
+.chat-options-btn {
+    margin-left: auto;
+    color: var(--text-sub);
+    opacity: 0;
+    padding: 4px;
+}
+
+
+.history-item:hover .chat-options-btn {
+    opacity: 1;
+}
+
+.chat-menu-dropdown {
+    position: absolute;
+    right: 10px;
+    top: 35px;
+    color: var(--text-main);
+    background: var(--bg-body);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 101;
+    display: none;
+    min-width: 120px;
+}
+
+.chat-menu-dropdown.show {
+    display: block;
+}
+
+.chat-menu-item {
+    padding: 10px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.chat-menu-item:hover {
+    background-color: var(--bg-hover);
+}
+
+.sidebar-footer {
+    padding: 10px 16px;
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.footer-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.footer-item:hover {
+    background-color: var(--bg-hover);
+}
+
+.settings-dropup {
+    position: absolute;
+    bottom: 70px;
+    left: 16px;
+    width: 220px;
+    background: var(--bg-body);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    display: none;
+    padding: 8px;
+    z-index: 101;
+}
+
+.settings-dropup.show {
+    display: block;
+}
+
+/* --- MAIN AREA --- */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* Stack header on top of content */
+    background: var(--bg-body);
+    overflow: hidden;
+    position: relative;
+}
+
+/* This is the container for Chat + Map */
+.content-wrapper {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* --- CHAT AREA --- */
+.chat-area {
+    flex: 1;
+    /* Takes full width by default */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: var(--bg-body);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- NAVIGATE (MAP) AREA --- */
+.navigate-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg-body);
+
+    /* Animation Start State */
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+/* When this class is added to .navigate-area */
+.navigate-area.nav-open {
+    width: 50%;
+    /* Pushes chat-area to 55% */
+    opacity: 1;
+}
+
+
+/* --- INTERNAL ELEMENTS --- */
+#map {
+    height: 95%;
+    width: 95%;
+    margin: 20px auto;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: #e5e3df;
+    /* Placeholder color */
+}
+
+.top-header {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    background: var(--bg-body);
+    flex-shrink: 0;
+}
+
+.chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 100px;
+    /* Space for the input-wrapper */
+}
+
+.input-wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 60px;
+    background: linear-gradient(transparent, var(--bg-body) 40%);
+    transition: bottom 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 10;
+}
+
+body.center-state .input-wrapper {
+    /* 3. END STATE: Push up to the middle using 'bottom' */
+    bottom: 50%;
+
+    /* Optional: This nudges it down slightly so it looks perfectly centered visually */
+    transform: translateY(50%);
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.current-chat-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    color: var(--text-sub);
+    font-weight: 500;
+    max-width: 30%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-content-limit {
+    width: 100%;
+    max-width: var(--chat-max-width);
+    margin: 0 auto;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.welcome-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    text-align: center;
+}
+
+.welcome-title {
+    font-size: 40px;
+    font-weight: 600;
+    margin-top: -100px;
+    background: linear-gradient(90deg, #4285f4, #d96570);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Message Styling */
+.message-row {
+    display: flex;
+    width: 100%;
+    gap: 16px;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.message-row.user {
+    justify-content: flex-end;
+}
+
+.bot-icon {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    perspective: 780px;
+    flex-shrink: 0;
+    background: transparent;
+    margin-top: 4px;
+}
+
+.bubble {
+    max-width: 85%;
+    font-size: 16px;
+    line-height: 1.8;
+    position: relative;
+}
+
+.bubble.user {
+    background: var(--bg-sidebar);
+    padding: 12px 20px;
+    border-radius: 24px;
+    color: var(--text-main);
+}
+
+.bubble.bot {
+    color: var(--text-main);
+    padding: 4px 0;
+}
+
+/* This forces space between blocks generated by the AI */
+.bubble.bot p,
+.bubble.bot ul,
+.bubble.bot h3 {
+    margin-bottom: 1.2rem !important;
+    /* Forces a gap after every element */
+}
+
+/* Ensure the list is contained and indented properly */
+.bubble.bot ul {
+    margin: 10px 0 15px 20px !important;
+    /* Forces the entire list to shift right */
+    padding-left: 0 !important;
+    list-style-position: outside !important;
+    /* Keeps bullets aligned in a straight line */
+}
+
+/* Add spacing between list items and fix text wrapping */
+.bubble.bot li {
+    margin-bottom: 12px !important;
+    padding-left: 8px !important;
+    display: list-item !important;
+    /* Ensures it behaves like a standard list */
+    line-height: 1.5;
+}
+
+/* Fix for Heading and Icon alignment */
+.bubble.bot h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+/* Ensure paragraph text doesn't touch the edges */
+.bubble.bot p {
+    margin-bottom: 12px;
+}
+
+/* --- TYING EFFECT INDICATOR --- */
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    height: 24px;
+    padding-left: 10px;
+}
+
+.typing-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--text-sub);
+    border-radius: 50%;
+    animation: pulse 1.4s infinite ease-in-out;
+    opacity: 0.4;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.input-container-inner {
+    max-width: var(--chat-max-width);
+    margin: 0 auto;
+}
+
+.chat-form {
+    background: var(--bg-sidebar);
+    border-radius: 28px;
+    padding: 10px 20px;
+    padding-right: 12px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s;
+}
+
+.chat-input {
+    font-family: "Google Sans Flex";
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-main);
+    padding: 8px;
+}
+
+.send-btn {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: var(--text-sub);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+.send-btn.active {
+    display: inline-flex;
+    color: var(--primary);
+    transform: scale(1.1);
+}
+
+.mic-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: var(--text-sub);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+.mic-btn:hover {
+    color: var(--primary);
+}
+
+.mic-btn.is-listening {
+    color: #ff4b4b;
+    background: rgba(255, 75, 75, 0.12);
+    animation: mic-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes mic-pulse {
+    0% {
+        box-shadow: 0 0 0 0px rgba(255, 75, 75, 0.5);
+        background: rgba(255, 75, 75, 0.12);
+    }
+
+    50% {
+        box-shadow: 0 0 0 6px rgba(255, 75, 75, 0);
+        background: rgba(255, 75, 75, 0.2);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0px rgba(255, 75, 75, 0);
+        background: rgba(255, 75, 75, 0.12);
+    }
+}
+
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+.overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* --- CUSTOM SCROLLBARS --- */
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+/* 1. The main chat container scrollbar */
+.chat-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 20px;
+    border: 2px solid var(--bg-body);
+    /* Creates a padding effect */
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-sub);
+}
+
+/* 2. The sidebar history list scrollbar */
+#chatHistoryList::-webkit-scrollbar {
+    width: 5px;
+}
+
+#chatHistoryList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#chatHistoryList::-webkit-scrollbar-thumb {
+    background-color: #00000020;
+    /* Subtle default */
+    border-radius: 10px;
+}
+
+[data-theme="dark"] #chatHistoryList::-webkit-scrollbar-thumb {
+    background-color: #ffffff20;
+    /* Subtle for dark mode */
+}
+
+#chatHistoryList::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-sub);
+}
+
+/* For Firefox (Standard Property) */
+.chat-container,
+#chatHistoryList {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+/* --- MODAL STYLES --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(2px);
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-content {
+    font-family: "Google Sans Flex";
+    background: var(--bg-body);
+    padding: 24px 32px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+}
+
+.modal-content h3 {
+    margin-bottom: 18px;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+#renameInput {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-sidebar);
+    color: var(--text-main);
+    font-size: 16px;
+    margin-bottom: 20px;
+    outline: none;
+}
+
+#renameInput:focus {
+    border-color: var(--primary);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--sidebar-active-text);
+    background-color: white;
+}
+
+.modal-btn:hover {
+    background-color: var(--sidebar-active);
+
+}
+
+.map-card-container {
+    background: var(--bg-sidebar);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    max-width: 350px;
+    margin: 12px 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.map-card-container:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+/* The Main Report Container */
+.report-box {
+    border-radius: 16px;
+    margin: 15px 0;
+    /* Prevent content jumping during typing */
+    min-height: 50px;
+}
+
+.report-box ul {
+    margin: 10px 0 15px 25px !important;
+    /* Fixes messy indentation */
+    list-style-type: disc !important;
+}
+
+.report-box li {
+    margin-bottom: 8px !important;
+    display: list-item !important;
+}
+
+.disclaimer-area p {
+    font-size: 0.65rem !important;
+    font-style: italic;
+    color: var(--text-sub);
+    margin-top: 10px;
+}
+
+/* Clean up internal report spacing */
+.report-box h3 {
+    font-weight: 600;
+    font-size: 18px;
+    margin-top: 0 !important;
+    /* Top heading shouldn't have extra space */
+    border: none !important;
+    /* Remove the old accent border we added earlier */
+    padding-left: 0 !important;
+}
+
+.disclaimer-area {
+    padding-left: 12px;
+    font-size: 12px;
+    color: var(--text-sub);
+    /* Muted text color for dark mode */
+    line-height: 1.3;
+    font-style: italic;
+    /* Differentiates from main content */
+    letter-spacing: 0.3px;
+    width: 100%;
+
+}
+
+/* --- Base Card Container --- */
+.map-card {
+    background: var(--bg-body);
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 16px 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+
+/* --- The Visual "Poster" Section --- */
+.map-visual-section {
+    height: 140px;
+    /* Slightly taller to fit props */
+    background: radial-gradient(circle at center, #1976d2 0%, #add8e6 70%, #ffffff 100%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* --- The "Snow/Stars" Sparkle Animation --- */
+.map-stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(white 1px, transparent 1px),
+        radial-gradient(white 2px, transparent 2px);
+    background-size: 50px 50px;
+    background-position: 0 0, 25px 25px;
+    opacity: 0.6;
+    animation: snowMove 10s linear infinite;
+}
+
+@keyframes snowMove {
+    0% {
+        background-position: 0 0, 25px 25px;
+    }
+
+    100% {
+        background-position: 50px 50px, 75px 75px;
+    }
+}
+
+/* --- Prop 1: Hanging Stethoscope --- */
+.map-prop-stethoscope {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    font-size: 5rem;
+    /* Very large */
+    color: rgba(255, 255, 255, 0.35);
+    /* Subtle watermark look */
+    transform: rotate(15deg);
+    z-index: 1;
+}
+
+/* --- Prop 2: Medical Kit --- */
+.map-prop-kit {
+    position: absolute;
+    bottom: -7px;
+    right: -7px;
+    font-size: 4rem;
+    color: rgba(255, 255, 255, 0.55);
+    transform: rotate(-10deg);
+    z-index: 1;
+}
+
+/* --- Center Location Marker (The Hero Icon) --- */
+.map-center-marker {
+    position: relative;
+    z-index: 10;
+    /* Above the props */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.map-center-marker i {
+    color: white;
+    font-size: 2.2rem;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    animation: pinBounce 2s infinite ease-in-out;
+}
+
+/* --- Pulse Animation for the Pin --- */
+.map-pulse {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    z-index: -1;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+@keyframes pinBounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* --- Text Content Styling --- */
+.map-details {
+    padding: 16px;
+    background: var(--bg-body);
+    /* Ensures text is readable */
+    position: relative;
+    z-index: 2;
+}
+
+.map-title {
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.map-desc {
+    color: var(--text-sub);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.map-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--sidebar-active-text);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 6px 12px;
+    background: var(--sidebar-active);
+    border-radius: 8px;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.map-btn:hover {
+    background: var(--sidebar-active-text);
+    color: var(--sidebar-active);
+}
+
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--text-sub);
+    margin-right: 15px;
+}
+
+/*Map Styling*/
+
+/* --- SIDE PANEL CONTAINER --- */
+.side-panel {
+    position: absolute;
+    /* Relative to .navigate-area */
+    top: 36px;
+    left: 36px;
+    width: 50%;
+    /* Slightly narrower for better fit */
+    background: var(--bg-body);
+    z-index: 1000;
+    padding: 30px 0;
+    /* Above the Leaflet map layers */
+    border-radius: 30px;
+    overflow-y: auto;
+
+    /* Animation: Slides in from the left of the MAP area */
+    transform: translateX(-130%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+    color: var(--text-main);
+    font-family: "Google Sans Flex", sans-serif;
+}
+
+/* When active, it slides into view inside the map */
+.side-panel.active {
+    transform: translateX(0);
+}
+
+.navigate-area {
+    position: relative;
+    /* REQUIRED to keep sidebar inside */
+    overflow: hidden;
+    /* Prevents sidebar from showing when hidden */
+}
+
+.close-map {
+    position: absolute;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    top: 32px;
+    right: 30px;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+    color: var(--text-sub);
+    font-size: 24px;
+    font-weight: 300;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.close-panel {
+    position: absolute;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    top: 24px;
+    right: 24px;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+    color: var(--text-sub);
+    font-size: 24px;
+    font-weight: 300;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.panel-title {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+/* --- INTERNAL PANEL STYLING --- */
+.panel-img-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 90px 90px;
+    gap: 4px;
+    margin-bottom: 16px;
+}
+
+.panel-img-main {
+    width: 100%;
+    height: 184px;
+    object-fit: cover;
+    grid-row: span 2;
+    border-radius: 8px 0 0 8px;
+}
+
+.panel-img-sub {
+    width: 100%;
+    height: 90px;
+    object-fit: cover;
+}
+
+.panel-img-sub:last-child {
+    border-radius: 0 8px 0 0;
+}
+
+.panel-body {
+    padding: 0 20px 20px;
+}
+
+.panel-title {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.panel-rating {
+    color: var(--text-sub);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.panel-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 20px;
+    background: var(--sidebar-active);
+    color: var(--sidebar-active-text);
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+}
+
+
+.google-maps-btn {
+    display: block;
+    background: var(--primary);
+    color: var(--bg-body);
+    text-align: center;
+    padding: 12px;
+    border-radius: 25px;
+    text-decoration: none;
+    margin-top: 20px;
+    font-weight: 500;
+}
+
+/* Loading Screen */
+.cssload-loader {
+    position: relative;
+    margin: 0 auto;
+    margin-top: 10vh;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    perspective: 780px;
+    overflow: hidden;
+    /* Gives the 3D depth */
+}
+
+.cssload-inner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+}
+
+/* 1. The Orange Ring */
+.cssload-inner.cssload-one {
+    left: 0%;
+    top: 0%;
+    animation: cssload-rotate-one 1.15s linear infinite;
+    border-bottom: 3px solid #add8e6;
+}
+
+/* 2. The Cyan Ring */
+.cssload-inner.cssload-two {
+    right: 0%;
+    top: 0%;
+    animation: cssload-rotate-two 1.15s linear infinite;
+    border-right: 3px solid #add8e6;
+}
+
+/* 3. The Blue Ring (From your screenshot) */
+.cssload-inner.cssload-three {
+    right: 0%;
+    bottom: 0%;
+    animation: cssload-rotate-three 1.15s linear infinite;
+    border-top: 3px solid #add8e6;
+}
+
+
+/* Responsive Design */
+@keyframes cssload-rotate-one {
+    0% {
+        transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+    }
+}
+
+@keyframes cssload-rotate-two {
+    0% {
+        transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+    }
+}
+
+/* This matches the snippet in your screenshot: rotateX(35deg) rotateY(55deg) */
+@keyframes cssload-rotate-three {
+    0% {
+        transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+    }
+}
+
+
+
+/* Responsive adjustment for Map width */
+@media (max-width: 1024px) {
+    .navigate-area.nav-open {
+        width: 50%;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .current-chat-title {
+        display: none;
+    }
+
+    .chat-content-limit {
+        padding: 20px 15px;
+    }
+
+    .side-panel {
+        width: 90%;
+        bottom: 10px;
+
+        top: auto;
+        bottom: 32px;
+        left: auto;
+
+
+        height: auto;
+        transform: translateX(120%);
+    }
+
+    .side-panel.active {
+        transform: translateX(0);
+    }
+
+    /* 1. Fix Layout Wrapper */
+    .content-wrapper {
+        flex-direction: column;
+        height: 100%;
+        /* Critical: Ensures it fits within the 100dvh body */
+        overflow: hidden;
+    }
+
+    /* 2. Fix Chat Area Scrolling */
+    .chat-area {
+        width: 100%;
+        flex: 1;
+        /* Grow to fill available space */
+        height: 100%;
+        /* Constraint height to allow scrolling */
+        overflow: hidden;
+        /* contain the inner scroll */
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .navigate-area {
+        height: 0;
+
+        transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 3. Fix Map Adjustment */
+    .navigate-area.nav-open {
+        width: 100%;
+        height: 100%;
+        /* Use % so it doesn't break the flex layout */
+        border-left: none;
+        position: relative;
+        display: flex;
+        justify-self: center;
+        transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .close-map {
+        right: 26px;
+        font-size: 28px;
+    }
+
+    /* 4. Fix Input Wrapper Position */
+    .input-wrapper {
+        position: absolute;
+        /* Keep absolute to float over content */
+        bottom: 0;
+        left: 0;
+        width: 100%;
+
+        /* Reduce side padding for mobile */
+        padding: 15px 15px;
+
+        /* iPhone Safe Area + spacing */
+        padding-bottom: env(safe-area-inset-bottom);
+
+        /* Solid background prevents text bleed-through */
+        background: var(--bg-body);
+        z-index: 20;
+    }
+
+    /* 5. Fix Chat Container Scroll Space */
+    .chat-container {
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        /* Enable scrolling */
+
+        /* iOS Smooth Scrolling */
+        -webkit-overflow-scrolling: touch;
+
+        /* Large padding at bottom so last message clears the input box */
+        padding-bottom: 160px;
+        padding-top: 20px;
+    }
+
+    /* Prevent buttons from shrinking */
+    .mic-btn,
+    .send-btn {
+        flex-shrink: 0;
+    }
+
+    .chat-form {
+        padding: 8px 15px;
+    }
+
+    #sidebar {
+        position: fixed;
+        /* Changed from absolute to fixed for better mobile feel */
+        left: -300px;
+        /* Hide off-screen */
+        top: 0;
+        height: 100%;
+        width: 280px;
+        z-index: 2000;
+        /* Ensure it's on top of everything */
+        transition: transform 0.3s ease;
+        /* Use transform for smoother animation */
+        background-color: var(--bg-sidebar);
+        /* Ensure background is opaque */
+    }
+
+    #sidebar.active {
+        transform: translateX(300px);
+        /* Slide in */
+    }
+}

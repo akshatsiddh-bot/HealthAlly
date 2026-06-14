@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<aside id="sidebar">
+    <div class="sidebar-header">
+        <div class="top-row">
+            <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        </div>
+        <div class="new-chat-btn" onclick="resetToNewChat()">
+            <i class="fa-regular fa-pen-to-square"></i> <span class="text-label">New Chat</span>
+        </div>
+    </div>
+    <div class="history-list" id="chatHistoryList"></div>
+    <div class="sidebar-footer">
+        <div class="footer-item" onclick="toggleSettings(event)">
+            <i class="fas fa-cog"></i> <span class="sidebar-footer-text">Settings & help</span>
+        </div>
+        <div class="settings-dropup" id="settingsMenu">
+            <div class="chat-menu-item" onclick="window.location.href='/account'"><i class="fas fa-user"></i>
+                Account</div>
+            <div class="chat-menu-item" id="themeBtn" onclick="toggleTheme()">
+                <i class="fas fa-moon"></i> Switch Theme
+            </div>
+            <div class="chat-menu-item" onclick="window.location.href='/logout'"><i class="fas fa-sign-out-alt"></i>
+                Log Out</div>
+        </div>
+    </div>
+</aside>
+
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<main>
+    <header class="top-header">
+        <button class="mobile-menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="header-title" id="modelSelector">
+            HealthAlly <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i>
+        </div>
+        <span class="current-chat-title" id="topTitle">New Chat</span>
+    </header>
+
+    <div class="content-wrapper">
+        <div class="chat-area">
+            <div class="chat-container">
+                <div class="chat-content-limit" id="chatContainer"></div>
+            </div>
+
+            <div class="input-wrapper">
+                <div class="input-container-inner">
+                    <form class="chat-form" id="chatForm">
+                        <input type="text" class="chat-input" id="userMessage" placeholder="Ask HealthAlly"
+                            autocomplete="off">
+                        <button type="button" class="mic-btn" id="micBtn">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                        <button type="submit" class="send-btn" id="sendBtn">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigate-area" id="map-modal">
+            <button class="close-map" onclick="closeMap()">×</button>
+            <div id="map">
+            </div>
+
+            <div id="side-panel" class="side-panel">
+                <button class="close-panel" onclick="closeSidePanel()">×</button>
+                <div id="panel-content"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<div class="modal-overlay" id="renameModal">
+    <div class="modal-content">
+        <h3>Rename Chat</h3>
+        <input type="text" id="renameInput" placeholder="Enter new title...">
+        <div class="modal-actions">
+            <button class="modal-btn cancel" onclick="closeRenameModal()">Cancel</button>
+            <button class="modal-btn save" id="confirmRenameBtn">Rename</button>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+<script>
+    const WELCOME_HTML = `
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-title">Hello, {{ user.first_name }}</div>
+                <div class="welcome-subtitle">How can I help you today?</div>
+            </div>`;
+
+
+    function toggleTheme() {
+        // 1. Target documentElement (<html>) to match your base.html logic
+        const root = document.documentElement;
+        const currentTheme = root.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        // 2. Apply instantly to the UI
+        root.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+
+        // 3. Update the button icon and text (Note the quotes around HTML strings)
+        const themeBtn = document.getElementById('themeBtn');
+        if (newTheme === 'dark') {
+            themeBtn.innerHTML = '<i class="fas fa-moon"></i> Switch Theme';
+            if (typeof changeMapTheme === "function") changeMapTheme('dark');
+        } else {
+            themeBtn.innerHTML = '<i class="fas fa-sun"></i> Switch Theme';
+            if (typeof changeMapTheme === "function") changeMapTheme('streets');
+        }
+
+        // 4. Update the Database in the background
+        fetch('/update_theme', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ theme: newTheme })
+        })
+            .then(response => {
+                if (!response.ok) console.error("Failed to save theme to DB");
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Check which theme is currently active on the <html> tag
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        // 2. Sync the sidebar button to show the correct icon/text on load
+        const themeBtn = document.getElementById('themeBtn');
+        if (themeBtn) {
+            if (currentTheme === 'dark') {
+                themeBtn.innerHTML = '<i class="fas fa-moon"></i> Switch Theme';
+            } else {
+                themeBtn.innerHTML = '<i class="fas fa-sun"></i> Switch Theme';
+            }
+        }
+
+        // 3. (Optional) Initialize Map theme if map exists
+        if (typeof changeMapTheme === "function") {
+            changeMapTheme(currentTheme === 'dark' ? 'dark' : 'streets');
+        }
+    });
+</script>
+
+{% endblock %}

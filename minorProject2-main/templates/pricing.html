@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+
+{% block title %}Pricing Page{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <h1 id="pricingHeroTitle">Simple, Transparent Pricing</h1>
+    <p id="pricingHeroSubtitle">Flexible options for individuals and families.<br>Start for free, upgrade when you
+        need more.</p>
+</section>
+
+<section class="pricing-section">
+    <div class="pricing-container">
+        <div class="pricing-card highlight">
+            <div class="plan-header">
+                <div class="plan-top-row">
+                    <div class="plan-name" id="pricingFreeName">Free Tier</div>
+                    <span class="popular-badge" id="pricingPopularBadge">POPULAR</span>
+                </div>
+                <div class="plan-price">
+                    <span id="pricingFreePrice">$0</span><span id="pricingFreeMonth">/ month</span>
+                </div>
+            </div>
+
+            <ul class="features-list">
+                <li>
+                    <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg></span>
+                    <span id="pricingF1"><b>500</b> AI Chat Queries / mo</span>
+                </li>
+                <li>
+                    <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg></span>
+                    <span id="pricingF2">Access to standard <b>ML Diagnosis</b></span>
+                </li>
+                <li>
+                    <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg></span>
+                    <span id="pricingF3">Find Doctors Nearby</span>
+                </li>
+                <li>
+                    <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg></span>
+                    <span id="pricingF4">Export to <b>PDF Summary</b></span>
+                </li>
+                <li>
+                    <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg></span>
+                    <span id="pricingF5">Standard Community Support</span>
+                </li>
+            </ul>
+
+            <button class="card-btn btn-active" id="pricingBtnFree" onclick="window.location.href='/login'">Start
+                for Free</button>
+        </div>
+
+        <div class="pricing-card">
+            <div class="plan-header">
+                <div class="plan-top-row">
+                    <div class="plan-name" id="pricingProName">Pro Tier</div>
+                </div>
+                <div class="plan-price">
+                    <span id="pricingProPrice">$29</span><span id="pricingProMonth">/ month</span>
+                </div>
+            </div>
+
+            <ul class="features-list">
+                <li>
+                    <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg></span><span id="pricingP1"><b>Unlimited</b> Queries</span>
+                </li>
+                <li>
+                    <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg></span><span id="pricingP2"><b>Priority</b> Processing Queue</span>
+                </li>
+                <li>
+                    <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg></span><span id="pricingP3">Advanced <b>Lab Report Analysis</b></span>
+                </li>
+                <li>
+                    <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg></span><span id="pricingP4">Family Account Management</span>
+                </li>
+                <li>
+                    <span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg></span><span id="pricingP5">24/7 Dedicated Support</span>
+                </li>
+            </ul>
+
+            <button class="card-btn btn-disabled" id="pricingBtnPro" disabled>Coming Soon</button>
+            <span class="coming-soon-text" id="pricingProFooter">This plan will be available soon. Stay
+                tuned!</span>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}

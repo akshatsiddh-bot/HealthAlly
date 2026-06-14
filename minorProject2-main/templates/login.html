@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealtAlly - Secure Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth-style.css') }}">
+</head>
+
+<body>
+
+    <a onclick="history.back()" class="global-back-btn" title="Go Back">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+
+    <div class="hero-section">
+        <div class="hero-bg-circle circle-1"></div>
+        <div class="hero-bg-circle circle-2"></div>
+
+        <div class="brand-logo">
+
+        </div>
+
+        <div class="hero-content">
+            <h1 class="hero-title">Your Health,<br>Intelligently Managed.</h1>
+            <p class="hero-text">Experience the future of personal healthcare. Secure AI analysis, instant reports, and
+                24/7 monitoring.</p>
+        </div>
+
+        <div class="hero-footer">
+            &copy; 2025 MedAI Health Systems. HIPAA Compliant.
+        </div>
+    </div>
+
+    <div class="form-section">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+            <i id="themeIcon" class="fas fa-sun"></i>
+        </button>
+
+        <div class="auth-container">
+
+            <div id="view-login" class="view-section active">
+                <div class="auth-header">
+                    <h2 class="auth-title">Welcome Back</h2>
+                    <p class="auth-subtitle">Please enter your details to sign in.</p>
+                </div>
+                <div id="loginAlert"
+                    style="background: transparent; display: none; padding: 10px; margin-bottom: 15px; border-radius: 16px; text-align: center;">
+                    <i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i><span id="loginAlertMsg"
+                        style="font-weight: 600;"></span>
+                </div>
+
+                <form onsubmit="handleLogin(event)">
+                    <div class="input-group">
+                        <label class="input-label">Username</label>
+                        <input type="text" class="auth-input" id="loginId" placeholder="Email or Username">
+                        <span class="error-msg" id="loginIdError">Please enter your ID</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Password</label>
+                        <input type="password" class="auth-input" id="loginPass" placeholder="Password">
+                        <span class="error-msg" id="loginPassError">Password is required</span>
+                        <div style="text-align: right; margin-top: 10px;">
+                            <a href="javascript:void(0)" onclick="switchView('forgot')"
+                                style="font-size: 0.85rem; color: var(--text-secondary); text-decoration: none;">Forgot
+                                Password?</a>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="auth-btn-primary">Sign In</button>
+                </form>
+
+                <div class="divider">or continue with</div>
+
+                <button class="social-btn" onclick="window.location.href='/login/google'">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google"
+                        style="width: 20px;">
+                    Sign in with Google
+                </button>
+
+                <p style="text-align: center; margin-top: 2rem; color: var(--text-secondary); font-size: 0.95rem;">
+                    Don't have an account? <span class="link-text" onclick="switchView('signup-step1')">Create one
+                        now</span>
+                </p>
+            </div>
+
+            <div id="view-signup-step1" class="view-section">
+                <button class="step-back-btn" onclick="switchView('login')">
+                    <i class="fas fa-arrow-left"></i> Back to Login
+                </button>
+
+                <div class="auth-header">
+                    <h2 class="auth-title">Create Account</h2>
+                    <p class="auth-subtitle">Start your health journey today.</p>
+                </div>
+
+                <form onsubmit="handleSignupNext(event)">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="input-group">
+                            <label class="input-label">First Name</label>
+                            <input type="text" class="auth-input" id="suFirst" placeholder="First Name">
+                            <span class="error-msg" id="suFirstError">Required</span>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Last Name</label>
+                            <input type="text" class="auth-input" id="suLast" placeholder="Last Name">
+                            <span class="error-msg" id="suLastError">Required</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Email Address</label>
+                        <input type="email" class="auth-input" id="suEmail" placeholder="Email Address">
+                        <span class="error-msg" id="suEmailError"></span>
+                        <span class="success-msg" id="suEmailSuccess"><i class="fas fa-check-circle"></i> Email
+                            available!</span>
+                    </div>
+
+                    <button type="submit" class="auth-btn-primary">
+                        Continue <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                    </button>
+                </form>
+
+                <div class="divider">or</div>
+
+                <button class="social-btn" onclick="window.location.href='/login/google'">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google"
+                        style="width: 20px;">
+                    Sign up with Google
+                </button>
+            </div>
+
+            <div id="view-signup-step2" class="view-section">
+                <button class="step-back-btn" onclick="switchView('signup-step1')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+
+                <div class="auth-header">
+                    <h2 class="auth-title">Secure Profile</h2>
+                    <p class="auth-subtitle">Create a strong password to protect your health data.</p>
+                </div>
+
+                <form onsubmit="handleSignupSubmit(event)">
+
+                    <div class="input-group">
+                        <label class="input-label">Username</label>
+                        <input type="text" class="auth-input" id="suUser" placeholder="Choose a username">
+                        <span class="error-msg" id="suUserError">Min 3 characters</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Password</label>
+                        <div style="position: relative;">
+                            <input type="password" class="auth-input" id="suPass" placeholder="Enter new password">
+                            <i class="fa-regular fa-eye-slash password-toggle"
+                                onclick="togglePassword('suPass', this)"></i>
+                        </div>
+
+                        <div class="helper-text">
+                            Use at least 8 characters. Don't use a password from another site, or something too obvious
+                            like your pet's name.
+                        </div>
+
+                        <span class="error-msg" id="suPassError">Min 8 characters</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Confirm Password</label>
+                        <div style="position: relative;">
+                            <input type="password" class="auth-input" id="suConfirm" placeholder="Confirm new password">
+                            <i class="fa-regular fa-eye-slash password-toggle"
+                                onclick="togglePassword('suConfirm', this)"></i>
+                        </div>
+                        <span class="error-msg" id="suConfirmError">Passwords must match</span>
+                    </div>
+
+                    <button type="submit" class="auth-btn-primary">Complete Registration</button>
+                </form>
+            </div>
+
+            <div id="view-forgot" class="view-section">
+                <button class="step-back-btn" onclick="switchView('login')">
+                    <i class="fas fa-arrow-left"></i> Back to Login
+                </button>
+
+                <div class="auth-header">
+                    <h2 class="auth-title">Reset Password</h2>
+                    <p class="auth-subtitle">Enter your email to receive a code.</p>
+                </div>
+
+                <form onsubmit="handleForgotRequest(event)">
+                    <div class="input-group">
+                        <input type="email" class="auth-input" id="forgotEmail" placeholder="Registered Email Address">
+                        <span class="error-msg" id="forgotEmailError">Please enter a valid email</span>
+                    </div>
+
+                    <button type="submit" class="auth-btn-primary">
+                        Send Code <i class="fas fa-paper-plane" style="margin-left: 8px;"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div id="view-reset-final" class="view-section">
+                <div class="auth-header">
+                    <h2 class="auth-title">New Credentials</h2>
+                    <p class="auth-subtitle">Check your email for the code.</p>
+                </div>
+
+                <form onsubmit="handleFinalReset(event)">
+                    <div class="input-group">
+                        <input type="text" class="auth-input" id="resetOtp" placeholder="Enter 6-digit Code"
+                            maxlength="6" style="letter-spacing: 3px; text-align: center; font-weight:700;">
+                        <span class="error-msg" id="resetOtpError">Invalid Code</span>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="input-group">
+                        <input type="password" class="auth-input" id="newPass" placeholder="New Password">
+                        <span class="error-msg" id="newPassError">Min 6 characters</span>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="password" class="auth-input" id="confirmNewPass"
+                            placeholder="Confirm New Password">
+                        <span class="error-msg" id="confirmNewPassError">Passwords must match</span>
+                    </div>
+
+                    <button type="submit" class="auth-btn-primary">Update Password</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="popup-window">
+        <div class="popup-content">
+            <i id="popup-window-icon" class="fa-solid fa-circle-check"></i>
+            <p id="popup-window-text"></p>
+        </div>
+        <div class="popup-progress-bar"></div>
+    </div>
+
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth-script.js') }}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,574 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<button class="hamburger" id="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div>
+
+<div class="page-container">
+    <!-- Back Button Section -->
+    <div class="back-section">
+        <a href="/dashboard" class="back-btn">
+            <i class="fas fa-chevron-left"></i>
+            <span>Back</span>
+        </a>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title">Account</div>
+            <div class="sidebar-menu">
+                <a href="#account" class="menu-link active" data-page="account">
+                    <i class="fas fa-user"></i>
+                    <span>Account</span>
+                </a>
+                <a href="#preferences" class="menu-link" data-page="preferences">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Preferences</span>
+                </a>
+            </div>
+        </div>
+
+        
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Account Page -->
+        <div id="account-page" class="content-page">
+            <h1 class="page-title">Account</h1>
+
+            <div class="setting-item">
+                <div class="setting-left">
+                    <div class="avatar-circle" id="avatar-container" onclick="openLightbox()">
+                        {% if current_user.profile_image != 'default.png' %}
+                        <img src="{{ current_user.profile_image }}" id="current-avatar-img" alt="Profile">
+                        {% else %}
+                        <span id="initial-text">{{ current_user.first_name[0] }}</span>
+                        <img src="" id="current-avatar-img" style="display: none;" alt="Profile">
+                        {% endif %}
+                    </div>
+
+                    <div class="setting-info">
+                        <div class="setting-label">{{current_user.first_name}} {{current_user.last_name}}</div>
+                        <div class="setting-value">{{current_user.username}}</div>
+                    </div>
+                </div>
+
+                <label for="avatar-upload" class="btn">Change avatar</label>
+                <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
+            </div>
+
+            <div id="crop-modal" class="modal-overlay">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h3>Adjust Profile Picture</h3>
+                    </div>
+
+                    <div class="modal-form-body">
+                        <div class="img-container" style="height: 300px; width: 100%; overflow: hidden;">
+                            <img id="image-to-crop" src="" style="max-width: 100%;">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn-secondary" onclick="closeCropModal()">Cancel</button>
+                        <button class="btn-primary" id="crop-and-upload">Upload</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="lightbox-modal" class="modal-overlay" onclick="closeLightbox(event)">
+                <div class="lightbox-content-wrapper">
+                    <img id="lightbox-img" src="">
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">Full Name</label>
+                    <div class="setting-value">{{current_user.first_name}} {{current_user.last_name}}</div>
+                </div>
+                <button class="btn" onclick="openModal('renameModal')">Change full name</button>
+
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">Username</label>
+                    <div class="setting-value">{{current_user.username}}</div>
+                </div>
+                <button class="btn" onclick="openModal('usernameModal')">Change username</button>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">Email</label>
+                    <div class="setting-value">{{current_user.email}}</div>
+                </div>
+            </div>
+
+            <h2 class="section-header">Your Subscription</h2>
+
+            <div class="subscription-card">
+                <div class="subscription-header">
+                    <div>
+                        <div class="subscription-title">Unlock the most powerful search experience with HealthAlly
+                            Pro</div>
+                        <div class="subscription-desc">HealthAlly Pro will be available soon. <a href="#"
+                                style="color: var(--primary);">Learn more</a></div>
+                    </div>
+                    <button class="upg-btn btn-primary" disabled>Upgrade plan</button>
+                </div>
+            </div>
+
+            <h2 class="section-header">System</h2>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">Support</label>
+                </div>
+                <button class="btn">Contact</button>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">You are signed in as {{current_user.username}}</label>
+                </div>
+                <button class="btn" onclick="window.location.href='/logout'">Sign out</button>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">Sign out of all sessions</label>
+                    <div class="setting-value">Devices or browsers where you are signed in</div>
+                </div>
+                <button class="btn">Sign out of all sessions</button>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">Delete account</label>
+                    <div class="setting-value">Permanently delete your account and data</div>
+                </div>
+                <button class="btn">Learn more</button>
+            </div>
+        </div>
+
+        <!-- Preferences Page -->
+        <div id="preferences-page" class="content-page" style="display: none;">
+            <h1 class="page-title">Preferences</h1>
+
+            <h2 class="section-header" style="margin-top: 0;">Appearance</h2>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">Appearance</label>
+                    <div class="setting-value">How HealthAlly looks on your device</div>
+                </div>
+                <div class="dropdown">
+                    <button class="btn dropdown-btn" id="theme-btn" onclick="toggleTheme()">
+                        <span id="theme-text">Light</span>
+                        <i class="fas fa-sun" id="theme-icon"></i>
+
+                    </button>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">Language</label>
+                    <div class="setting-value">The language used in the user interface</div>
+                </div>
+                <button class="btn dropdown-btn">
+                    <span>Default</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">Preferred response language</label>
+                    <div class="setting-value">The language used for AI responses</div>
+                </div>
+                <button class="btn dropdown-btn">
+                    <span>Automatic</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">Autosuggest</label>
+                    <div class="setting-value">Enable dropdown and tab-complete suggestions while typing a query
+                    </div>
+                </div>
+                <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+                    <div class="toggle-slider"></div>
+                </div>
+            </div>
+
+            <h2 class="section-header">Artificial Intelligence</h2>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">Model</label>
+                </div>
+                <button class="upg-btn" disabled>Upgrade to choose</button>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">Image generation model</label>
+                </div>
+                <button class="upg-btn" disabled>Upgrade to select</button>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">Video generation model</label>
+                </div>
+                <button class="upg-btn" disabled>Upgrade to Max</button>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <label class="setting-label">AI data retention</label>
+                    <div class="setting-value">AI Data Retention allows Perplexity to use your searches to improve
+                        AI models. Turn this setting off if you wish to exclude your data from this process.</div>
+                </div>
+                <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+                    <div class="toggle-slider"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="renameModal">
+    <div class="modal-container">
+
+        <div class="modal-header">
+            <h3>Change Full Name</h3>
+        </div>
+
+        <div class="modal-form-body row-layout">
+            <div class="form-group">
+                <label for="renameFirst">First Name</label>
+                <input type="text" class="form-input" id="renameFirst" value="{{current_user.first_name}}">
+            </div>
+
+            <div class="form-group">
+                <label for="renameLast">Last Name</label>
+                <input type="text" class="form-input" id="renameLast" value="{{current_user.last_name}}">
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('renameModal')">Cancel</button>
+            <button class="btn btn-primary" id="saveRenameBtn">Rename</button>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal-overlay" id="usernameModal">
+    <div class="modal-container">
+
+        <div class="modal-header">
+            <h3>Change Username</h3>
+        </div>
+
+        <div class="modal-form-body">
+            <div class="form-group">
+                <label for="newUsernameInput">Username</label>
+                <input type="text" class="form-input" id="newUsernameInput" value="{{ current_user.username }}">
+                <small id="usernameError" class="error-text"></small>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('usernameModal')">Cancel</button>
+            <button class="btn-primary" id="saveUsernameBtn">Update</button>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+    // Hamburger menu toggle
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('overlay');
+
+
+    function toggleMenu() {
+        hamburger.classList.toggle('active');
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+    }
+
+    hamburger.addEventListener('click', toggleMenu);
+    overlay.addEventListener('click', toggleMenu);
+
+    // Page navigation
+    document.querySelectorAll('.menu-link').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Update active state
+            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+
+            // Show corresponding page
+            const page = this.dataset.page;
+            document.querySelectorAll('.content-page').forEach(p => p.style.display = 'none');
+            const targetPage = document.getElementById(page + '-page');
+            if (targetPage) {
+                targetPage.style.display = 'block';
+            }
+
+            // Close menu on mobile after selection
+            if (window.innerWidth <= 968) {
+                toggleMenu();
+            }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Get theme from the HTML tag (which was set by base.html)
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+        // 2. Sync the text and icon in the preferences tab
+        const themeText = document.getElementById('theme-text');
+        const themeIcon = document.getElementById('theme-icon');
+
+        if (currentTheme === 'dark') {
+            themeText.textContent = 'Dark';
+            themeIcon.className = 'fas fa-moon';
+        } else {
+            themeText.textContent = 'Light';
+            themeIcon.className = 'fas fa-sun';
+        }
+    });
+
+    function toggleTheme() {
+        // 1. Target the root <html> element
+        const root = document.documentElement;
+        const themeText = document.getElementById('theme-text');
+        const themeIcon = document.getElementById('theme-icon');
+
+        // 2. Get the current theme from <html>
+        const currentTheme = root.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        // 3. Apply to <html> and LocalStorage
+        root.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+
+        // 4. Update UI Elements
+        if (newTheme === 'dark') {
+            themeText.textContent = 'Dark';
+            themeIcon.className = 'fas fa-moon';
+        } else {
+            themeText.textContent = 'Light';
+            themeIcon.className = 'fas fa-sun';
+        }
+
+        // 5. Sync with Backend
+        fetch('/update_theme', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ theme: newTheme })
+        })
+            .then(response => {
+                if (!response.ok) console.log("Failed to save theme to DB");
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+
+    function openModal(modalName) {
+        document.getElementById(modalName).classList.add('show');
+    }
+
+    function closeModal(modalName) {
+        document.getElementById(modalName).classList.remove('show');
+    }
+
+    // --- 1. RENAME LOGIC ---
+    document.getElementById('saveRenameBtn').addEventListener('click', function () {
+        const firstName = document.getElementById('renameFirst').value;
+        const lastName = document.getElementById('renameLast').value;
+
+        fetch('/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                modal: 'renameModal',
+                first_name: firstName,
+                last_name: lastName
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal('renameModal');
+                    location.reload();
+                } else {
+                    // ERROR: Don't close modal, just show text
+
+                    alert("Error Occured!")
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+
+    // --- 2. USERNAME LOGIC ---
+    document.getElementById('saveUsernameBtn').addEventListener('click', function () {
+        const usernameInput = document.getElementById('newUsernameInput').value;
+        const errorMsg = document.getElementById('usernameError'); // Get error tag
+
+        // Clear previous errors
+        errorMsg.innerText = "";
+
+        fetch('/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                modal: 'usernameModal',
+                username: usernameInput // <--- Fixed Typo: was 'firstName'
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal('usernameModal'); // <--- Fixed Typo: was 'uernameModal'
+                    location.reload();
+                } else {
+                    // ERROR: Show "Username already taken" here
+                    errorMsg.innerText = data.message;
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                errorMsg.innerText = "Server error. Please try again later.";
+            });
+    });
+
+    /* --- VARIABLES --- */
+    let cropper;
+    const imageToCrop = document.getElementById('image-to-crop');
+    const fileInput = document.getElementById('avatar-upload');
+    const cropModal = document.getElementById('crop-modal');
+    const lightboxModal = document.getElementById('lightbox-modal');
+
+    /* --- 1. OPEN CROP MODAL --- */
+    fileInput.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imageToCrop.src = e.target.result;
+
+                // Use .add('show') because your CSS uses .modal-overlay.show
+                cropModal.classList.add('show');
+
+                if (cropper) { cropper.destroy(); }
+                cropper = new Cropper(imageToCrop, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    guides: true,
+                    autoCropArea: 1,
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    /* --- 2. CLOSE CROP MODAL --- */
+    function closeCropModal() {
+        cropModal.classList.remove('show'); // Hide modal
+        fileInput.value = ''; // Reset input
+        if (cropper) cropper.destroy();
+    }
+
+    /* --- 3. UPLOAD LOGIC (Existing Logic) --- */
+    document.getElementById('crop-and-upload').addEventListener('click', function () {
+        const btn = this;
+        btn.innerText = "Uploading...";
+        btn.disabled = true;
+
+        const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+
+        canvas.toBlob(function (blob) {
+            const formData = new FormData();
+            formData.append('avatar', blob, 'avatar.jpg');
+
+            fetch('/update_profile_pic', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        // Update the visible image
+                        const avatarImg = document.getElementById('current-avatar-img');
+                        const initialText = document.getElementById('initial-text');
+
+                        avatarImg.src = data.url;
+                        avatarImg.style.display = 'block';
+                        if (initialText) initialText.style.display = 'none';
+
+                        closeCropModal();
+                    }
+                    // Reset button
+                    btn.innerText = "Upload";
+                    btn.disabled = false;
+                })
+                .catch(error => {
+                    console.error(error);
+                    btn.innerText = "Upload";
+                    btn.disabled = false;
+                });
+        });
+    });
+
+    /* --- 4. LIGHTBOX LOGIC --- */
+    function openLightbox() {
+        const img = document.getElementById('current-avatar-img');
+        if (img.src && img.style.display !== 'none') {
+            document.getElementById('lightbox-img').src = img.src;
+            lightboxModal.classList.add('show');
+        }
+    }
+
+    // Close when clicking strictly outside the image
+    function closeLightbox(event) {
+        if (event.target === lightboxModal) {
+            lightboxModal.classList.remove('show');
+        }
+    }
+</script>
+{% endblock %}

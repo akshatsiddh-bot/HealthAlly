@@ -1,0 +1,800 @@
+@font-face {
+    font-family: 'fkGroteskNeue';
+    src: url('https://assets.perplexity.ai/fonts/FKGroteskNeue-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+.google-sans-flex-chat {
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings:
+        "slnt" 0,
+        "wdth" 100,
+        "GRAD" 0,
+        "ROND" 0;
+}
+
+:root {
+    /* Base Backgrounds */
+    --bg-body: #ffffff;
+    --bg-sidebar: #f0f4f9;
+    /* Updated from Source */
+    --bg-card: #ffffff;
+    --bg-input: #ffffff;
+
+    /* Borders & Text */
+    --border: #e2e8f0;
+    --text-main: #1e1f20;
+    /* Updated from Source */
+    --text-sub: #444746;
+    /* Updated from Source */
+    --text-light: #94a3b8;
+    /* Kept original (No equivalent in source) */
+
+    /* Action Colors */
+    --primary: #0b57d0;
+    /* Updated from Source */
+    --primary-hover: #0842a0;
+    /* Calculated darker shade of #0b57d0 */
+    --danger: #ef4444;
+
+    /* State Colors */
+    --hover-bg: #e3e3e362;
+    /* Updated from Source */
+    --sidebar-active: #d3e3fd;
+    --sidebar-active-text: #0842A0;
+    --danger: #ef4444;
+    /* Updated from Source */
+}
+
+[data-theme="dark"] {
+    /* Base Backgrounds */
+    --bg-body: #131314;
+    /* Updated from Source */
+    --bg-sidebar: #1e1f20;
+    /* Updated from Source */
+    --bg-card: #1e1f20;
+    /* Mapped to match sidebar surface */
+    --bg-input: #131314;
+    /* Mapped to match body */
+
+    /* Borders & Text */
+    --border: #444746;
+    /* Updated from Source */
+    --text-main: #e3e3e3;
+    /* Updated from Source */
+    --text-sub: #c4c7c5;
+    /* Updated from Source */
+    --text-light: #64748b;
+    /* Kept original */
+
+    /* Action Colors */
+    --primary: #a8c7fa;
+    /* Updated from Source (lighter blue for dark mode) */
+    --primary-hover: #84b1f8;
+    /* Calculated hover for dark mode */
+
+    /* State Colors */
+    --hover-bg: #2d2e30;
+    /* Updated from Source */
+    --sidebar-active: #1f3760;
+    --sidebar-active-text: #d3e3fd;
+    /* Updated from Source */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Google Sans Flex", sans-serif;
+    font-weight: 400;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    min-height: 100vh;
+}
+
+.page-container {
+    display: flex;
+    min-height: 100vh;
+    justify-content: space-between;
+}
+
+/* Hamburger menu button */
+.hamburger {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    width: 40px;
+    height: 40px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    transition: transform 0.3s;
+}
+
+.hamburger:hover {
+    background-color: var(--hover-bg);
+}
+
+.hamburger span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: var(--text-main);
+    transition: all 0.3s;
+    border-radius: 2px;
+}
+
+/* Hamburger animation to cross */
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Overlay for mobile */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+
+    /* NEW: Use visibility instead of display for transitions */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+
+    /* Safety: ensure it doesn't block clicks when hidden */
+    pointer-events: none;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    /* Re-enable clicks when active */
+}
+
+/* Back button area */
+.back-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: fit-content;
+    padding: 20px 16px;
+    background-color: var(--bg-sidebar);
+    z-index: 1000;
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-sub);
+    text-decoration: none;
+    font-size: 15px;
+    padding: 8px 14px;
+    border-radius: 30px;
+    transition: all 0.2s;
+}
+
+.back-btn:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-main);
+}
+
+/* Sidebar */
+.sidebar {
+    width: 300px;
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    padding: 80px 16px 24px 16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 100;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-section {
+    margin-bottom: 32px;
+}
+
+.sidebar-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-sub);
+    margin: 12px 8px;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.menu-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    color: var(--text-sub);
+    text-decoration: none;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.menu-link i {
+    width: 16px;
+    font-size: 14px;
+}
+
+.menu-link:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-main);
+}
+
+.menu-link.active {
+    background-color: var(--sidebar-active);
+    color: var(--sidebar-active-text);
+}
+
+/* Main content */
+.main-content {
+    flex: 1;
+    /* Match this margin to the sidebar width */
+    margin-left: 600px;
+    padding: 60px 80px;
+    max-width: 900px;
+    width: 100%;
+}
+
+.page-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-main);
+}
+
+/* Setting items */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.setting-info {
+    flex: 1;
+}
+
+.setting-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-main);
+    margin-bottom: 4px;
+    display: block;
+}
+
+.setting-value {
+    font-size: 13px;
+    color: var(--text-sub);
+}
+
+/* Avatar */
+.avatar-circle {
+    width: 60px;
+    height: 60px;
+    background-color: #ddd;
+    border: 1px solid var(--text-light);
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    /* Indicates it's clickable */
+    position: relative;
+}
+
+.avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Modal Overlay (Shared) */
+.modal-overlay {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    /* Dark background */
+    backdrop-filter: blur(5px);
+    /* The blur effect */
+}
+
+/* Crop Modal Content */
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+
+/* Ensure the image container in the modal doesn't overflow */
+.img-container img {
+    display: block;
+    max-width: 100%;
+}
+
+/* --- LIGHTBOX (VIEW MODE) STYLES --- */
+.lightbox-content-wrapper {
+    position: relative;
+    width: 450px;
+    /* Control the size here */
+    height: 450px;
+    /* Control the size here */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: popIn 0.3s ease;
+}
+
+/* The actual big circle image */
+#lightbox-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    /* Makes it a circle */
+    object-fit: cover;
+    /* Optional: nice border match */
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+    /* Glow effect */
+    background-color: var(--bg-sidebar);
+    /* Fallback color */
+}
+
+/* Animation for smooth opening */
+@keyframes popIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid var(--border);
+    background-color: var(--bg-card);
+    color: var(--text-sub);
+    white-space: nowrap;
+}
+
+/* Buttons */
+.upg-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid var(--border);
+    background-color: var(--bg-card);
+    color: var(--text-sub);
+    white-space: nowrap;
+}
+
+.btn:hover {
+    background-color: var(--sidebar-active);
+    color: var(--sidebar-active-text);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+.upg-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+/* Subscription card */
+.subscription-card {
+    background-color: var(--hover-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 24px 0;
+}
+
+.subscription-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.subscription-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.subscription-desc {
+    font-size: 13px;
+    color: var(--text-sub);
+}
+
+/* Section headers */
+.section-header {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 40px 0 24px 0;
+    color: var(--text-main);
+}
+
+.section-header:first-child {
+    margin-top: 0;
+}
+
+/* Form input */
+.form-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: var(--bg-input);
+    color: var(--text-main);
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.form-input:focus {
+    border-color: var(--primary);
+}
+
+/* Toggle switch */
+.toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background-color: var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.toggle-switch.active {
+    background-color: var(--primary);
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: var(--bg-sidebar);
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+.toggle-switch.active .toggle-slider {
+    transform: translateX(20px);
+}
+
+/* Dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-btn {
+    min-width: 80px;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Save button container */
+.save-container {
+    margin-top: 32px;
+    text-align: right;
+}
+
+/* --- MODAL LAYOUT --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(2px);
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-container {
+    font-family: "Google Sans Flex", sans-serif;
+    background: var(--bg-body);
+    padding: 24px 32px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    /* Increased slightly for better spacing */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /* Space between Header, Body, and Footer */
+}
+
+/* --- TYPOGRAPHY --- */
+.modal-header h3 {
+    margin: 0;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+/* Use this wrapper to hold your inputs */
+.modal-form-body {
+    display: flex;
+    flex-direction: column;
+    /* Default to vertical stack */
+    gap: 16px;
+}
+
+/* Modifier: Add this class if you want inputs side-by-side */
+.modal-form-body.row-layout {
+    flex-direction: row;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+
+    /* Allows inputs to grow evenly in row layout */
+}
+
+.form-group label {
+    font-size: 14px;
+    padding: 4px;
+    margin-bottom: 4px;
+    color: var(--text-main);
+}
+
+.form-input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-sidebar);
+    color: var(--text-main);
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+    /* Important for padding calculations */
+}
+
+.form-input:focus {
+    border-color: var(--primary);
+}
+
+/* --- BUTTONS --- */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.modal-footer .btn-primary {
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--sidebar-active-text);
+    background-color: var(--sidebar-active);
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+
+.modal-footer .btn-primary:hover {
+    color: var(--sidebar-active);
+    background-color: var(--sidebar-active-text);
+}
+
+.modal-footer .btn-secondary {
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--sidebar-active-text);
+    background-color: transparent;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.modal-footer .btn-secondary:hover {
+    background-color: var(--sidebar-active);
+}
+
+.error-text {
+    color: var(--danger);
+    font-size: 0.85rem;
+    margin-top: 6px;
+    padding-left: 4px;
+    font-weight: 500;
+}
+
+@media (max-width: 968px) {
+
+    /* Show Hamburger */
+    .hamburger {
+        display: flex;
+    }
+
+    /* Hide Back Button on Mobile */
+    .back-section {
+        display: none;
+    }
+
+    /* Fix Sidebar Hiding */
+    .sidebar {
+        width: 280px;
+        /* Slightly narrower for mobile */
+        /* Use transform instead of left for better performance */
+        transform: translateX(-100%);
+        left: 0;
+        padding-top: 80px;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
+        /* Add shadow when open */
+    }
+
+    .sidebar.active {
+        /* Slide in */
+        transform: translateX(0);
+    }
+
+    /* Reset Main Content Margin */
+    .main-content {
+        margin-left: 0;
+        padding: 80px 24px 40px 24px;
+        width: 100%;
+    }
+
+    .lightbox-content-wrapper {
+        width: 70%;
+        height: auto;
+    }
+}
+
+/* --- MOBILE ELEMENT STACKING (Max Width 600px) --- */
+@media (max-width: 600px) {
+
+    /* Make text container full width */
+    .setting-left {
+        width: 100%;
+        margin-bottom: 4px;
+    }
+
+    /* Stack Subscription Card */
+    .subscription-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .subscription-header .btn {
+        width: 100%;
+    }
+
+    /* Adjust Modal Sizing for Phones */
+    .modal-container {
+        width: 95%;
+        padding: 20px;
+        max-height: 90vh;
+        /* Prevent overflow on small screens */
+        overflow-y: auto;
+    }
+
+    .modal-form-body.row-layout {
+        flex-direction: column;
+        /* Stack names vertically */
+    }
+}
